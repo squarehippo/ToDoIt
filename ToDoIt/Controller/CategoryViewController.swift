@@ -19,6 +19,8 @@ class CategoryViewController: UITableViewController {
         super.viewDidLoad()
         
         loadCategory()
+        
+        tableView.rowHeight = 60
     
     }
 
@@ -41,6 +43,39 @@ class CategoryViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "goToItems", sender: self)
     }
+    
+//    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+//        let delete = UITableViewRowAction(style: .destructive, title: "") { (action, indexPath) in
+//            //delete item at indexPath
+//            //tableView.deleteRows(at: [indexPath], with: .fade)
+//        }
+//        if let deleteImage = UIImage(named: "deleteIcon") {
+//            delete.backgroundColor = UIColor(patternImage: deleteImage)
+//        }
+//
+//        return [delete]
+//    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (ac, view, success) in
+            if let category = self.categories?[indexPath.row] {
+                do {
+                    try self.realm.write {
+                        self.realm.delete(category)
+                    }
+                } catch {
+                    print("error")
+                }
+                    
+            }
+            success(true)
+        }
+        deleteAction.image = UIImage(named: "deleteIcon")
+        deleteAction.backgroundColor = .orange
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ToDoListViewController

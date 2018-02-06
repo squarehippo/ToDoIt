@@ -36,7 +36,7 @@ class ToDoListViewController: UITableViewController {
             print("returning 1")
             return 1
         } else {
-            print("returning count", todoItems?.count)
+            print("returning count", todoItems?.count as Any)
             return todoItems!.count
         }
         
